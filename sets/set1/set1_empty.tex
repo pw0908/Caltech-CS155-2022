@@ -70,56 +70,62 @@ Answer each of the following problems with 1-2 short sentences.
   What is a hypothesis set?
 \end{problem}
 \begin{solution}
-  
+  The hypothesis set is the set that contains our hypothesis (which we hope approximates the target function).
 \end{solution}
 
 \begin{problem}[2]
   What is the hypothesis set of a linear model?
 \end{problem}
 \begin{solution}
-  
+  A hypothesis in the hypothesis set of a linear model has the general form of:
+  \begin{equation}
+    \mathbf{w}^T\mathbf{x}+b
+  \end{equation}
 \end{solution}
 
 \begin{problem}[2]
   What is overfitting?
 \end{problem}
 \begin{solution}
-  
+  Overfitting is the situation where our test error is much greater than our training error, usually occuring when too many fitted parameters have been introduced to the model where these parameters now account for undesired aspects such as noise.
 \end{solution}
 
 \begin{problem}[2]
   What are two ways to prevent overfitting?
 \end{problem}
 \begin{solution}
-  
+  1. Splitting our training data into a training set and validation set, performing cross-validation to fit the model.
+  2. Use fitting strategies such as ridge, lasso and elastic net regression which constraint the fitted parameters to avoid overfitting.
 \end{solution}
 
 \begin{problem}[2]
   What are training data and test data, and how are they used differently? Why should you never change your model based on information from test data?
 \end{problem}
 \begin{solution}
-  
+  Training data is used to fit the model whilst testing data is used to evaluate the performance of the model. As a result, for a testing set to serve is purpose properly, it cannot be involved in the training of the model, despite the fact it may improve the performance (although, as a result of using the testing data, we will not be able to properly evaluate this).
 \end{solution}
 
 \begin{problem}[2]
   What are the two assumptions we make about how our dataset is sampled?
 \end{problem}
 \begin{solution}
-  
+  1. It is assumed that the inputs of this dataset are sampled independently of the `true' distribution. 
+  2. It is assumed that the outputs of this dataset accurately represent the output space (e.g. if we're sampling COVID test results, we would expect our ouputs to contain positive, negative and inconclusive outputs)
 \end{solution}
 
 \begin{problem}[2]
   Consider the machine learning problem of deciding whether or not an email is spam. What could $X$, the input space, be? What could $Y$, the output space, be?
 \end{problem}
 \begin{solution}
-  
+  X could be the the `bag of words' used in the email, the sender's email address, the email title \textit{etc.}.
+  Y could be spam or not spam [0 and 1 binary values].
 \end{solution}
 
 \begin{problem}[2]
   What is the $k$-fold cross-validation procedure?
 \end{problem}
 \begin{solution}
-  
+  This involves first splitting our training set into $k$ manifolds. In a given iteration, we select $k-1$ manifolds to train our data on and the remaining manifold to evaluate the model performance. This is repeated $k$ times with different manifolds being used to evaluate the model each time. 
 \end{solution}
 
 
@@ -147,7 +153,27 @@ Answer each of the following problems with 1-2 short sentences.
 \end{problem}
 
 \begin{solution}
-  
+  \begin{equation}
+  \E_S[E_\text{out}(f_S)] = \E_S[\E_x\left[\left(f_S(x) - y(x)\right)^2\right]]
+  \end{equation}
+  \begin{equation}
+    \E_S[E_\text{out}(f_S)] = \E_S\left[\E_x\left[\left(f_S(x)-F(x) +F(x) - y(x)\right)^2\right]\right]
+  \end{equation}
+  \begin{equation}
+    \E_S[E_\text{out}(f_S)] = \E_S\left[\E_x\left[\left(f_S(x)-F(x)\right)^2 +\left(F(x) - y(x)\right)^2+2\left(f_S(x)-F(x)\right)\left(F(x) - y(x)\right)\right]\right]
+  \end{equation}
+  \begin{equation}
+    \E_S[E_\text{out}(f_S)] = \E_x\left[\E_S\left[\left(f_S(x)-F(x)\right)^2\right] +\E_S\left[\left(F(x) - y(x)\right)^2\right]+2\E_S\left[\left(f_S(x)-F(x)\right)\left(F(x) - y(x)\right)\right]\right]
+  \end{equation}
+  \begin{equation}
+    \E_S[E_\text{out}(f_S)] = \E_x\left[\E_S\left[\left(f_S(x)-F(x)\right)^2\right] +\E_S\left[\left(F(x) - y(x)\right)^2\right]\right]
+  \end{equation}
+  \begin{equation}
+    \E_S[E_\text{out}(f_S)] = \E_x\left[\E_S\left[\left(f_S(x)-F(x)\right)^2\right] +\left(F(x) - y(x)\right)^2\right]
+  \end{equation}
+  \begin{equation}
+    \E_S \left[E_\text{out}\left(f_S\right)\right] = \E_x[\Bias(x) + \Var(x)]
+  \end{equation}
 \end{solution}
 
 In the following problems you will explore the bias-variance tradeoff by producing learning curves for polynomial regression models.
@@ -177,41 +203,47 @@ The dataset \texttt{bv_data.csv} is provided and has a header denoting which col
 
 \end{problem}
 \begin{solution}
+  \begin{figure}[H]
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_1.pdf}}
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_2.pdf}}\\
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_6.pdf}}
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_12.pdf}}
+  \end{figure}
   \end{solution}
 
 \begin{problem}[3]
   Based on the learning curves, which polynomial regression model (i.e. which degree polynomial) has the highest bias? How can you tell?
 \end{problem}
 \begin{solution}
-
+ The model with the highest bias is the linear model as its training error is largest for all $N$. This is to be expected as it is most likely that the dataset contains certain complexities that cannot be captured using a linear model.
 \end{solution}
 
 \begin{problem}[3]
   Which model has the highest variance? How can you tell?
 \end{problem}
 \begin{solution}
-  
+  The 12-$th$ order polynomial has the largest variance as it has the largest difference in error between the validation and training set. This is another example of overfitting where the additional parameters are accounting for the unphysical noise in the data and not capturing the actual trend, resulting in the higher validation error.
 \end{solution}
 
 \begin{problem}[3]
   What does the learning curve of the quadratic model tell you about how much the model will improve if we had additional training points?
 \end{problem}
 \begin{solution}
-
+ As we increase $N$, the validation error appears to approach the training error. The training error plateaux early on at low $N$ whilst the validation error asymtotically approach the training error. This implies that the quadratic model may generalise well.
 \end{solution}
 
 \begin{problem}[3]
   Why is training error generally lower than validation error?
 \end{problem}
 \begin{solution}
-  
+  This is to be expected as the fitted model was designed to minimise the error in the training set. If the validation set is selected properly, then, in the ideal scenario, our fitted model will be perfect and the errors will be the same. However, more likely than not, there will be noise in both datasets and the validation model may contain behaviours not captured by the training set, increasing the validation error. 
 \end{solution}
 
 \begin{problem}[3]
   Based on the learning curves, which model would you expect to perform best on some unseen data drawn from the same distribution as the training data, and why?
 \end{problem}
 \begin{solution}
-  
+  For $N=100$ data points, the 6-$th$ degree polynomial has the lowest validation error. Although the validation and training errors aren't as similar as they are compared to the quadratic model, this lower validation error does imply this model should perform better on unseen data.
 \end{solution}
 
 
@@ -240,7 +272,7 @@ Linear regression learns a model of the form:
   Include an additional element in $\mathbf{w}$ and $\mathbf{x}$.
 \end{hint}
 \begin{solution}
-  
+  We add a new element to the $\mathbf{w}$ vector: $w_0=b$ and add a new element to the $\mathbf{x}$ vector: $x_0=1$. All other elements $1,\hdots,d$ remain the same.
 \end{solution}
 
 Linear regression learns a model by minimizing the squared loss function $L$, which is the sum across all training data $\{(\mathbf{x}_1, y_1),\cdots,(\mathbf{x}_N, y_N)\}$ of the squared difference between actual and predicted output values:
@@ -250,7 +282,12 @@ Linear regression learns a model by minimizing the squared loss function $L$, wh
   SGD uses the gradient of the loss function to make incremental adjustments to the weight vector $\mathbf{w}$. Derive the gradient of the squared loss function with respect to $\mathbf{w}$ for linear regression.
 \end{problem}
 \begin{solution}
-  
+  \begin{equation}
+    \nabla_\mathbf{w}L(f) = \nabla_\mathbf{w}\left[\sum_{i=1}^N y_i^2 - 2y_i\mathbf{w}^T\mathbf{x}_i+(\mathbf{w}^T\mathbf{x}_i)^2\right]
+  \end{equation}
+  \begin{equation}
+    \nabla_\mathbf{w}L(f) = - 2\sum_{i=1}^N (y_i-\mathbf{w}^T\mathbf{x}_i)\mathbf{x}_i
+  \end{equation}
 \end{solution}
 
 The following few problems ask you to work with the first of two provided Jupyter notebooks for this problem, \texttt{3_notebook_part1.ipynb}, which includes tools for gradient descent visualization. This notebook utilizes the files \texttt{sgd_helper.py} and \texttt{multiopt.mp4}, but you should not need to modify either of these files. 
@@ -275,7 +312,7 @@ See code. %This does not need to be changed.
   Run the visualization code in the notebook corresponding to problem D. How does the convergence behavior of SGD change as the starting point varies? How does this differ between datasets 1 and 2? Please answer in 2-3 sentences.
 \end{problem}
 \begin{solution}
-
+ It appears that the starting point does not have a significant impact on the convergence of SGD as, regardless of the starting point, the solutions converge to the same point at around the same time, with the furtherest point taking marginally longer than the rest. Similarly, it seems the dataset itself doesn't affect the convergence rate of each starting point relative to the other. The reason for this could be due to the fact that the loss function is nice and convex, not having any significant changes in convexity or any local minima.
 \end{solution}
 
 \begin{problem}[6]
@@ -283,7 +320,10 @@ See code. %This does not need to be changed.
 \end{problem}
 
 \begin{solution}
-
+ \begin{figure}[H]
+  \subfloat[]{\includegraphics[width=0.7\textwidth]{err_train_SGD.pdf}}
+ \end{figure}
+ As we can see, as we increase $\eta$, the rate of convergence increases, where our largest value of $\eta$ plateaux at around 100 epochs. However, that isn't to say increasing $\eta$ will always improve the rate of convergence. If $\eta$ is too large, we may over-shoot the true minima, resulting in the algorithm oscilating around the true solution (or even diverging in the worst-case scenario).
 \end{solution}
 
 
@@ -304,13 +344,19 @@ For your implementation of problems F-H, \textbf{do} consider the bias term usin
   %$\epsilon$ here is a measure of how much change in error there is compared to the initial error in the epoch. Calculate the change in error every epoch and compare it to the change in error from the first epoch. If new change/initial change is less than $\epsilon$, stop the training. $\eta$ is the factor by which you multiply the gradient in each step of the descent, and $\mathbf{w}$ is the initial weight vector.
 \end{problem}
 \begin{solution}
+  The following weights were obtained:
+  
+  $\mathbf{w}=$[ -5.94229011   3.94369494 -11.72402388   8.78549375  -0.22720591]
 \end{solution}
 
 \begin{problem}[2]
   Perform SGD as in the previous problem for each learning rate $\eta$ in \[\{e^{-10}, e^{-11}, e^{-12}, e^{-13}, e^{-14}, e^{-15}\},\] and calculate the training error at the beginning of each epoch during training.  On a single plot, show training error vs. number of epochs trained for each of these values of $\eta$. Explain what is happening.
 \end{problem}
 \begin{solution}
-  
+  \begin{figure}[H]
+    \subfloat[]{\includegraphics[width=0.7\textwidth]{SGD_3G.pdf}}
+   \end{figure}
+   As we can see above, as we increase the learning rate, we converge to the optimal weights faster. As explained previously, we don't expect this trend to continue forever; eventually $\eta$ will get too large that we will just oscilate around the optimal solution.
 \end{solution}
 
 
@@ -318,7 +364,11 @@ For your implementation of problems F-H, \textbf{do} consider the bias term usin
   The closed form solution for linear regression with least squares is \[\mathbf{w} = \left(\sum_{i=1}^N \mathbf{x_i}\mathbf{x_i}^T\right)^{-1}\left(\sum_{i=1}^N \mathbf{x_i}y_i\right).\]  Compute this analytical solution.  Does the result match up with what you got from SGD?
 \end{problem}
 \begin{solution}
- 
+ The weights obtained using least squares is:
+
+ $\mathbf{w}=$[ -5.99157048   4.01509955 -11.93325972   8.99061096  -0.31644251]
+
+ This is indeed very close to the solution obtained using SGD (approximately a 7\% error).
 \end{solution}
 
 Answer the remaining questions in 1-2 short sentences.
@@ -327,20 +377,21 @@ Answer the remaining questions in 1-2 short sentences.
   Is there any reason to use SGD when a closed form solution exists?
 \end{problem}
 \begin{solution}
-  
+  Least square regression can only apply to problems whose objective function is squared distance between the estimates and true values; SGD can be applied to any objective function as long as it is differentiable. This increases the range of problems it can be applied to.
 \end{solution}
 
 \begin{problem}[2]
   Based on the SGD convergence plots that you generated earlier, describe a stopping condition that is more sophisticated than a pre-defined number of epochs.
 \end{problem}
 \begin{solution}
-  
+  We could specify a value of the loss function or step size (relative or absolute) after which the SGD algorithm can terminate (e.g. if the loss function or relative step size is less than $10^{-8}$). Similarly, if the validation error increases, regardless of our learning rate, we can terminate the SGD algorithm.
 \end{solution}
 
 \begin{problem}[2]
 How does the convergence behavior of the weight vector differ between the perceptron and SGD algorithms?
 \end{problem}
 \begin{solution}
+  In the SGD algorithm, the weight vector eventually converges with smaller and smaller step sizes, given the length of the gradient becomes smaller as we approach the optimum. For the PLA algorithm, the step size scales with the length of our data points $\mathbf{x}$, as such, the size of the step remains largerly the same throughout the algorithm, even when approaching the optimum solution.
 \end{solution}
 
 
@@ -408,8 +459,25 @@ The following few problems ask you to work with the provided Jupyter notebook fo
   
 \end{problem}
 \begin{solution}
+  \begin{center}
+		\begin{tabular}{ |c|c|c|c|c|c|c| } 
+			\hline
+			t & b & w$_1$ & w$_2$  & x$_1$ &  x$_2$ & y \\ 
+			\hline
+			0 & 0 & 0 & 1 & 1 & -2 & 1\\ 
+			1 & 1 & 1 & -1 & 0 & 3 & 1\\
+			2 & 2 & 1 & 2 & 1 & -2 & 1\\
+			3 & 3 & 2 & 0 & & &  \\
+			\hline
+		\end{tabular}
+	\end{center}
 
-
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{separable_PLA.pdf}
+    \caption{Perceptron's classifier visualised for each step.}
+    % \label{fig:figure1}
+  \end{figure}
 \end{solution}
 
 \begin{problem}[4]
@@ -420,14 +488,23 @@ The following few problems ask you to work with the provided Jupyter notebook fo
   Finally, how does this generalize for an $N$-dimensional set, in which \textbf{no} $<$$N$-dimensional hyperplane contains a non-linearly-separable subset? For the $N$-dimensional case, you may state your answer without proof or justification.
 \end{problem}
 \begin{solution}
+ For a 2D data set, the minimum number of data points to have a linearly inseparable set is four. For example, $\mathbf{x}=\{(0,1),(0,-1),(1,0),(-1,0)\}, y=\{+1,+1,-1,-1\}$ is a linearly inseparable set. In 3D, we would expect the five points to be the minimum dataset size to be linearly inseparable. We can generalise this as, if $N$ data points lies on one of the planes in $N$ dimensions, adding an additional point on one of these planes (for example) will still be separable. However, adding a second point on the same plane but on the opposite side of the origin will result in an inseparable set. 
 
+ As such, we can say that, for an $N$ dimensional set, $N+2$ data points are the minimum required to have a set that is not linearly separable.
 \end{solution}
 
 \begin{problem}[2]
   Run the visualization code in the Jupyter notebook section corresponding to question C (report your plots). Assume a dataset is \emph{not} linearly separable. Will the Perceptron Learning Algorithm ever converge? Why or why not?
 \end{problem}
 \begin{solution}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{unseparable_PLA.pdf}
+    \caption{Perceptron's classifier visualised for each step for a linearly inseparable case.}
+    % \label{fig:figure1}
+  \end{figure}
 
+  As shown above, if the dataset is not linearly separable, the PLA algorithm will never converge. This is because our stop condition is that all the variables are correctly classified. For such a data set, this will never be possible. As such, we just oscilate between different perceptrons.
 \end{solution}
 
 \end{document}
