@@ -1,6 +1,6 @@
 \newif\ifshowsolutions
 \showsolutionstrue
-\input{./preamble}
+\input{preamble}
 
 
 
@@ -75,7 +75,7 @@ Performing gradient descent on any of these loss functions will train a model to
 Squared loss is often a terrible choice of loss function to train on for classification problems.  Why?
 
 \begin{solution}
-
+ Generally, the squared loss heavily biases towards outliers. This is made worse for classification problems as the magnitude of the error will be $(1+|\mathbf{w}^T\mathbf{x}|)^2$. This will also bias against hypothesis with large $|\mathbf{w}^T\mathbf{x}|$.
 \end{solution}
 
 \problem[9]
@@ -91,7 +91,12 @@ For each loss function/model, plot the data points as a scatter plot and overlay
 What differences do you see in the decision boundaries learned using the different loss functions? Provide a qualitative explanation for this behavior.
 
 \begin{solution}
-
+  The figures below were obtained using ridge regression and logistic regression, respectively:
+  \begin{figure}[H]
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{ridge_P1.pdf}}
+    \subfloat[]{\includegraphics[width=0.49\textwidth]{logistic_P1.pdf}}
+  \end{figure}
+  In the case of ridge regression (or squared loss function), the boundary is very close to the boundary of the data points, in contrast to logistic regression. This is most likely because of the greater weighting of outliers in the case of the squared loss function, where these data points are more-strongly weighted when determining the parameters. This is not the case in logistic regression where the boundary is much more centered between the datasets.
 \end{solution}
 
 \problem[9]
@@ -100,7 +105,7 @@ Leaving squared loss behind, let's focus on log loss and hinge loss. Consider th
 Given a linear model with weights $w_0 = 0, w_1 = 1, w_2 = 0$ (where $w_0$ corresponds to the bias term), compute the gradients $\nabla_{w}L_{\text{hinge}}$ and $\nabla_{w}L_{\text{log}}$ of the hinge loss and log loss, and calculate their values for each point in S.
 
 \begin{center}
-  \includegraphics[width=.8\textwidth]{./plots/SimpleDatasetWithDecisionBoundary.png}
+  \includegraphics[width=.8\textwidth]{./images/SimpleDatasetWithDecisionBoundary.png}
 \end{center}
 \begin{small}
   The example dataset and decision boundary described above. Positive instances are
@@ -108,14 +113,36 @@ Given a linear model with weights $w_0 = 0, w_1 = 1, w_2 = 0$ (where $w_0$ corre
 \end{small}
 
 \begin{solution}
-
+  The gradient of the Hinge loss function is given by:
+  \begin{eqnarray*}
+		\nabla_w L_{\text{Hinge}} = \begin{cases} 
+		0 & y\textbf{w}^T\textbf{x} \geq 1 \\
+		-y\textbf{x} & y\textbf{w}^T\textbf{x} < 1 \\ 
+		\end{cases}\\
+		\end{eqnarray*} 
+  The gradient of the logistic loss function is given by:
+  \begin{eqnarray*}
+		\nabla_\textbf{w} L_{\text{log}} = \frac{-y\textbf{x}}{e^{\textbf{w}^{T}\textbf{x}y} + 1}
+	\end{eqnarray*}
+  As a result, the following values for the gradient at each data point was obtained:
+  \begin{center}
+    \begin{tabular}{|c| c|c|c|c|c|} 
+      x$_1$ & x$_2$ & y & $\nabla_w$L$_{\text{Hinge}}$  & $\nabla_w$L$_{\text{log}}$ \\ 
+      \hline
+      0.5 & 3.0 & 1 & [-1,-0.5,-3] & [-0.378, -0.189, -1.133] \\ 
+      2.0 & -2.0 & 1 & [0,0,0] & [-0.119, -0.238, 0.238] \\
+      -3.0 & 1.0 & -1 & [0,0,0] & [0.047, -0.142, 0.047]\\
+    \end{tabular}
+  \end{center} 
 \end{solution}
 
 \problem[4]
 Compare the gradients resulting from log loss to those resulting from hinge loss. When (if ever) will these gradients converge to 0? For a linearly separable dataset, is there any way to reduce or altogether eliminate training error without changing the decision boundary?
 
 \begin{solution}
+ In the case of the hinge loss function, it is possible for the gradient to reduce to 0 if all the data points are correctly classified (since at that point, $y\mathbf{w}^T\mathbf{x}\geq 1$). However, this does not appear to be the case for logistic regression as, even for points which are correctly classified, the gradient is non-zero. In fact, the only case for which the gradient will be 0, for a binary classification problem, will be when $\mathbf{x}=0$. It will, however, approach zero when $exp{\mathbf{w}^T\mathbf{x}y}$ becomes infinitely large. 
 
+ If a dataset is linearly separable, it should be possible to bring the training error to zero using a linear boundary. However, outliers will always be present and, as such, the training error can never truly be zero. For this reason, we include margins for our boundaries which aid in accounting for the presence of these outliers.
 \end{solution}
 
 \problem[5]
@@ -124,7 +151,9 @@ Based on your answer to the previous question, explain why for an SVM to be a ``
 (You don't need to prove that minimizing $L_\text{hinge} + \lambda\Vert w \Vert^2$ results in a maximum margin classifier; just show that the additional penalty term addresses the issues of minimizing just $L_\text{hinge}$.)
 
 \begin{solution}
+ The hinge loss function, as shown previously, will converge once all points have been classified correctly. However, this does mean that some points may lie directly on the boundary, leaving no room for margin of error. This beats the purposes of SVM being `maximum margin' classifier. 
 
+ The addition of the penatly prevents the algorithm from converging to the first weights which minimise the hinge loss function. By tuning the $\lambda$ parameter, we can force the classifier to converge to a solution with larger margins, in order to avoid having points on the boundary of our classifier.
 \end{solution}
 
 \newpage
@@ -139,7 +168,7 @@ Will adding a penalty term always decrease the out-of-sample errors?
 Please justify your answers. Think about the case when there is over-fitting while training the model.
 
 \begin{solution}
- 
+ Generally, adding a penalty term will not improve the in-sample error as, by constraining the weights, we are reducing the range of weights the classifiers can choose. Either the weights will be within the constrained space (and match the unconstrained solution) or it will lie on the boundary of the constraint. We do, however, expect it to decrease the out-of-sample error. By constraining the classifier, we are making it less susceptible to noise and random errors which typically lead to overfitting. By avoiding overfitting, we (hopefully) end up with a model that more-accurately characterises the underlying behaviour of the dataset, thus yielding a more-accurate model. However, if regularisation is overdone, we can actually worsen the solution as we will miss-out on some of the underlying behaviour of the dataset.
 \end{solution}
 
 \problem[4]
@@ -148,7 +177,7 @@ In fact, $\ell_0$ regularization (using $\ell_0$ norm instead of $\ell_1$ or $\e
 However, it is rarely used.  Why?
 
 \begin{solution}
-
+ $\ell_0$ regularization effectively constrains the number of weights. Whilst this is effectively what $\ell_1$ and $\ell_2$ regularisation are doing, this isn't as direct a constraint. Furthermore, $\ell_0$ regularization is non-convex and non-continuous, making it very difficult to optimise for as we will not be able to obtain simple derivatives for the loss function.
 \end{solution}
 
 \subsection{Implementation of \texorpdfstring{$\ell_2$}{L2} regularization:}
@@ -192,35 +221,42 @@ Do the following for both training data sets (wine\_training1.txt and wine\_trai
  You should end up with three plots, with two series (one for wine\_training1.txt and one for wine\_training2.txt) on each plot. Note that the $E_\text{in}$ and $E_\text{out}$ values you plot should not include the regularization penalty --- the penalty is only included when performing gradient descent.
 
 \begin{solution}
-
+  The following figures were generated:
+  \begin{figure}[H]
+    \subfloat[]{\includegraphics[width=0.5\textwidth]{E_in_2.pdf}}\\
+    \subfloat[]{\includegraphics[width=0.5\textwidth]{E_out_2.pdf}}\\
+    \subfloat[]{\includegraphics[width=0.5\textwidth]{l2norm_2.pdf}}
+  \end{figure}
 \end{solution}
 
 \problem[4]
 Given that the data in wine\_training2.txt is a subset of the data in wine\_training1.txt, compare errors (training and test) resulting from training with wine\_training1.txt (100 data points) versus wine\_training2.txt (40 data points). Briefly explain the differences.
 
 \begin{solution}
+ In terms of training error, $E_\text{in}$ is practically identical for both data sets. This is not too surprising as, if training set 2 is a representative subset of training set 1, they will capture the same behaviour, thus yield very similar errors. At low $\lambda$, training set 2 obtains slightly lower errors than training set 1, most likely because the same number of parameters have fewer data points to fit and, given they aren't constrained, they are able to overfit. However, at larger $\lambda$, where the parameters are more-constrained, training set 1 has the smaller error, primarily because training set 2 has fewer data points to fit the limited number of parameters.
 
+ However, in the testing error, there are significant differences, where training set 2 yields greater errors than training set 1. At low $\lambda$, we observe overfitting as, with unconstrained parameters, they can account for the noise in the smaller data set, thus yield a greater $E_\text{out}$. We observe a minima in $E_\text{out}$ for both data sets, highlighting that we've limited overfitting for these data sets. However, beyond this minima, as we further constrain the parameters, they are less able to correctly characterise the underlying behaviour in the dataset, thus resulting in a greater, and similar, $E_\text{out}$.
 \end{solution}
 
 \problem[4]
 Briefly explain the qualitative behavior (i.e. over-fitting and under-fitting) of the training and test errors with different $\lambda$s while training with data in wine\_training1.txt.
 
 \begin{solution}
-
+ As explained previously, at low $\lambda$, we are observing some slight overfitting of training set 1, highlighted by the decrease in $E_\text{out}$ with increasing $\lambda$. At around $\lambda=5\times 10^{-1}$, we observe a minimum in $E_\text{out}$, indicating the point where we've limited overfitting. Beyond this point, we begin over-constraining the weights, leading to under-fitting and significant increases in $E_\text{out}$.
 \end{solution}
 
 \problem[4]
 Briefly explain the qualitative behavior of the $\ell_2$ norm of $\textbf{w}$ with different $\lambda$s while training with the data in wine\_training1.txt.
 
 \begin{solution}
-   
+   Unsurprisingly, we observe a decrease in $\|\mathbf{w}\|_2$ with increasing $\lambda$. This is primarily because, with increasing $\lambda$, we are constraining the value of $\|\mathbf{w}\|_2^2$ directly. Thus, with increasing $\lambda$, $\|\mathbf{w}\|_2$ will always decrease.
 \end{solution}
 
 \problem[4]
 If the model were trained with wine\_training2.txt, which $\lambda$ would you choose to train your final model? Why?
 
 \begin{solution}
-  
+  The minimum in $E_\text{out}$ occurs at approximately $\lambda=10^{0}$, thus highlighting this is the point where we've limited the extent of overfitting and we have obtained the `best' weights for this data set. We can then use a testing set to evaluate the performance of these parameters.
 \end{solution}
 
 % Question 2
@@ -257,7 +293,19 @@ What happens to the number of model weights that are exactly zero with Ridge reg
 }
 
 \begin{solution}
-
+  \begin{enumerate}
+    \item The following plot was generated:
+    \begin{figure}[H]
+      \subfloat[]{\includegraphics[width=0.5\textwidth]{lasso_3.pdf}}
+    \end{figure}
+    \item The following plot was generated:
+    \begin{figure}[H]
+      \subfloat[]{\includegraphics[width=0.5\textwidth]{ridge_3.pdf}}
+    \end{figure}
+    \item Within Lasso, as it is an $\ell_1$ regularisation, as the hyperparameter increases, the weights eventually get set to 0. One can see this above where, one by one, the weights get set to zero, the order of which depends on their initial magnitude. By $\alpha=1.6$, all weights are set to 0. 
+    
+    On the other hand, in ridge regression, although the weights approach 0, they do so asymtotically. Even in the case of $w_5$, its value is small but non-zero. This is the nature of $\ell_2$ regularisation.
+  \end{enumerate}
 \end{solution}
 
 \problem[9]
@@ -272,14 +320,23 @@ where $\mathbf{x} \in \mathbb{R}^{N}$ is the vector of datapoints and $\mathbf{y
 This is linear regression with Lasso regularization.
 
 \begin{subsolution}
- 
+ \begin{equation}
+   \partial_w(\Vert\mathbf{y} - \mathbf{x}w\Vert^2 + \lambda\Vert w\Vert_1) = -2\mathbf{x}^T\mathbf{y}+2\mathbf{x}^T\mathbf{x}w\pm\lambda = 0
+ \end{equation}
+ Note, $\pm$ is used to indicate the fact that the derivative $\|w\|_1$ is discontinuous.
+ \begin{equation}
+  w = \frac{\mathbf{x}^T\mathbf{y}}{\mathbf{x}^T\mathbf{x}}\mp\frac{\lambda}{2\mathbf{x}^T\mathbf{x}}
+\end{equation}
 \end{subsolution}
 
 \subproblem
 In this question, we continue to consider Lasso regularization in 1-dimension. Now, suppose that $w \neq 0$ when $\lambda = 0$. Does there exist a value for $\lambda$ such that $w = 0$? If so, what is the smallest such value?
 
 \begin{subsolution}
-  
+  The smallest value of $\lambda$ is that results in $w=0$ is:
+  \begin{equation}
+    \lambda = 2|\mathbf{x}^T\mathbf{y}|
+  \end{equation}
 \end{subsolution}
 
 \problem[9]
@@ -292,13 +349,17 @@ where $\mathbf{X} \in \mathbb{R}^{N \times d}$ is the matrix of datapoints and $
 This is linear regression with Ridge regularization.
 
 \begin{subsolution}
- 
+  \begin{align}
+    \partial_w &\left( \|\textbf{y} - \textbf{X}^{T}\textbf{w}\|^2 + \lambda\|\textbf{w}\|_2^2\right) \\
+    &= -2\textbf{X}^T (\textbf{y} - \textbf{X}^{T}\textbf{w}) + 2\lambda\textbf{w} = 0 \\
+  \textbf{w} &= \textbf{X}^T\textbf{y}(\lambda I + \textbf{X}^T\textbf{X})^{-1}
+    \end{align} 
 \end{subsolution}
 
 \subproblem In this question, we consider Ridge regularization in 1-dimension. Suppose that $w \neq 0$ when $\lambda = 0$. Does there exist a value for $\lambda > 0$ such that $w = 0$? If so, what is the smallest such value?
 
 \begin{subsolution}
-
+ There is no $\lambda$ for which $\mathbf{w}=0$ such that $\lambda\geq 0$.
 \end{subsolution}
 
 \end{document}

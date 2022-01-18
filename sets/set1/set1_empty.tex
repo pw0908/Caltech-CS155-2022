@@ -1,6 +1,6 @@
 \newif\ifshowsolutions
 \showsolutionstrue
-\input{preamble}
+\input{./preamble}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HEADER
@@ -203,6 +203,7 @@ The dataset \texttt{bv_data.csv} is provided and has a header denoting which col
 
 \end{problem}
 \begin{solution}
+  Link: \url{https://colab.research.google.com/drive/18sjMP0ADNXw8WxW4mZiMroxFu20poX9e?usp=sharing}
   \begin{figure}[H]
     \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_1.pdf}}
     \subfloat[]{\includegraphics[width=0.49\textwidth]{poly_2.pdf}}\\
@@ -312,6 +313,7 @@ See code. %This does not need to be changed.
   Run the visualization code in the notebook corresponding to problem D. How does the convergence behavior of SGD change as the starting point varies? How does this differ between datasets 1 and 2? Please answer in 2-3 sentences.
 \end{problem}
 \begin{solution}
+  Link: \url{https://colab.research.google.com/drive/110b7vOryXQQPvu6pNwGutkXwQU6ucG0h?usp=sharing}
  It appears that the starting point does not have a significant impact on the convergence of SGD as, regardless of the starting point, the solutions converge to the same point at around the same time, with the furtherest point taking marginally longer than the rest. Similarly, it seems the dataset itself doesn't affect the convergence rate of each starting point relative to the other. The reason for this could be due to the fact that the loss function is nice and convex, not having any significant changes in convexity or any local minima.
 \end{solution}
 
@@ -364,6 +366,7 @@ For your implementation of problems F-H, \textbf{do} consider the bias term usin
   The closed form solution for linear regression with least squares is \[\mathbf{w} = \left(\sum_{i=1}^N \mathbf{x_i}\mathbf{x_i}^T\right)^{-1}\left(\sum_{i=1}^N \mathbf{x_i}y_i\right).\]  Compute this analytical solution.  Does the result match up with what you got from SGD?
 \end{problem}
 \begin{solution}
+  Link: \url{https://colab.research.google.com/drive/18-vtFm-zo8FgV1DoXhesaWBiGQ-WVJgM?usp=sharing}
  The weights obtained using least squares is:
 
  $\mathbf{w}=$[ -5.99157048   4.01509955 -11.93325972   8.99061096  -0.31644251]
@@ -459,6 +462,7 @@ The following few problems ask you to work with the provided Jupyter notebook fo
   
 \end{problem}
 \begin{solution}
+  Link: \url{https://colab.research.google.com/drive/12ZU5s1JKzMPPDOsZFnOj1Wz9QHndKTwE?usp=sharing}
   \begin{center}
 		\begin{tabular}{ |c|c|c|c|c|c|c| } 
 			\hline
