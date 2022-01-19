@@ -76,6 +76,8 @@ Squared loss is often a terrible choice of loss function to train on for classif
 
 \begin{solution}
  Generally, the squared loss heavily biases towards outliers. This is made worse for classification problems as the magnitude of the error will be $(1+|\mathbf{w}^T\mathbf{x}|)^2$. This will also bias against hypothesis with large $|\mathbf{w}^T\mathbf{x}|$.
+
+ Furthermore, when the squared loss function is used as the objective function, the resulting function is non-convex, implying that we may not converge to the true minima when optimising the weights. 
 \end{solution}
 
 \problem[9]
@@ -140,7 +142,7 @@ Given a linear model with weights $w_0 = 0, w_1 = 1, w_2 = 0$ (where $w_0$ corre
 Compare the gradients resulting from log loss to those resulting from hinge loss. When (if ever) will these gradients converge to 0? For a linearly separable dataset, is there any way to reduce or altogether eliminate training error without changing the decision boundary?
 
 \begin{solution}
- In the case of the hinge loss function, it is possible for the gradient to reduce to 0 if all the data points are correctly classified (since at that point, $y\mathbf{w}^T\mathbf{x}\geq 1$). However, this does not appear to be the case for logistic regression as, even for points which are correctly classified, the gradient is non-zero. In fact, the only case for which the gradient will be 0, for a binary classification problem, will be when $\mathbf{x}=0$. It will, however, approach zero when $exp{\mathbf{w}^T\mathbf{x}y}$ becomes infinitely large. 
+ In the case of the hinge loss function, it is possible for the gradient to reduce to 0 if all the data points are correctly classified (since at that point, $y\mathbf{w}^T\mathbf{x}\geq 1$). However, this does not appear to be the case for logistic regression as, even for points which are correctly classified, the gradient is non-zero. In fact, the only case for which the gradient will be 0, for a binary classification problem, will be when $\mathbf{x}=0$. It will, however, approach zero when $\exp{\mathbf{w}^T\mathbf{x}y}$ becomes infinitely large. 
 
  If a dataset is linearly separable, it should be possible to bring the training error to zero using a linear boundary. However, outliers will always be present and, as such, the training error can never truly be zero. For this reason, we include margins for our boundaries which aid in accounting for the presence of these outliers.
 \end{solution}
@@ -321,11 +323,10 @@ This is linear regression with Lasso regularization.
 
 \begin{subsolution}
  \begin{equation}
-   \partial_w(\Vert\mathbf{y} - \mathbf{x}w\Vert^2 + \lambda\Vert w\Vert_1) = -2\mathbf{x}^T\mathbf{y}+2\mathbf{x}^T\mathbf{x}w\pm\lambda = 0
+   \partial_w(\Vert\mathbf{y} - \mathbf{x}w\Vert^2 + \lambda\Vert w\Vert_1) = -2\mathbf{x}^T\mathbf{y}+2\mathbf{x}^T\mathbf{x}w+\lambda \frac{w}{|w|}= 0
  \end{equation}
- Note, $\pm$ is used to indicate the fact that the derivative $\|w\|_1$ is discontinuous.
  \begin{equation}
-  w = \frac{\mathbf{x}^T\mathbf{y}}{\mathbf{x}^T\mathbf{x}}\mp\frac{\lambda}{2\mathbf{x}^T\mathbf{x}}
+  w = \frac{\mathbf{x}^T\mathbf{y}}{\mathbf{x}^T\mathbf{x}}-\frac{\lambda}{2\mathbf{x}^T\mathbf{x}}\frac{w}{|w|}
 \end{equation}
 \end{subsolution}
 
@@ -333,10 +334,14 @@ This is linear regression with Lasso regularization.
 In this question, we continue to consider Lasso regularization in 1-dimension. Now, suppose that $w \neq 0$ when $\lambda = 0$. Does there exist a value for $\lambda$ such that $w = 0$? If so, what is the smallest such value?
 
 \begin{subsolution}
-  The smallest value of $\lambda$ is that results in $w=0$ is:
+  The above function is undefined at $w=0$. Thus taking the limit $w\rightarrow 0^+$:
   \begin{equation}
-    \lambda = 2|\mathbf{x}^T\mathbf{y}|
+    0 = \frac{\mathbf{x}^T\mathbf{y}}{\mathbf{x}^T\mathbf{x}}-\frac{\lambda}{2\mathbf{x}^T\mathbf{x}}
   \end{equation}
+  \begin{equation}
+    \lim_{w\rightarrow 0^+}\lambda = 2|\mathbf{x}^T\mathbf{y}|
+  \end{equation}
+  An identical solution is obtained when we approach $0^-$.
 \end{subsolution}
 
 \problem[9]
@@ -359,7 +364,7 @@ This is linear regression with Ridge regularization.
 \subproblem In this question, we consider Ridge regularization in 1-dimension. Suppose that $w \neq 0$ when $\lambda = 0$. Does there exist a value for $\lambda > 0$ such that $w = 0$? If so, what is the smallest such value?
 
 \begin{subsolution}
- There is no $\lambda$ for which $\mathbf{w}=0$ such that $\lambda\geq 0$.
+ There is no $\lambda$ for which $w=0$ .
 \end{subsolution}
 
 \end{document}
