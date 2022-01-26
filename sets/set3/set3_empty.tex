@@ -223,6 +223,7 @@ leaf node size.
 ii. Train a random forest classifier using Gini as the impurity measure, maximal tree depth as early stopping criterion, and 1,000 trees in the forest. Try different tree depths from 2 to 20 in increments of 1. Then, on a single plot, plot both training and test classification error versus tree depth.
 
 \begin{solution}
+    Link: \url{https://colab.research.google.com/drive/1UVimdtI8v23hzEZKEsAVK-flVlzsvp8Q?usp=sharing}
     i. The following figure was generated:
     \begin{figure}[H]
         \begin{center}
@@ -440,6 +441,7 @@ $$\alpha_{t}^* = \frac{1}{2} \ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right)
 \end{solution}
 
 \begin{problem}[14]
+    Link: \url{https://colab.research.google.com/drive/1nVX72Sv4XCMkEagQP8hl0KE8AT2Pww9Y?usp=sharing}
     Implement the \texttt{GradientBoosting.fit()} and \texttt{AdaBoost.fit()} methods in the notebook provided for you. Some important notes and guidelines follow:
     \begin{itemize}
         \item For both methods, make sure to work with the class attributes provided to you. Namely, after \texttt{GradientBoosting.fit()} is called, \texttt{self.clfs} should be appropriately filled with the \texttt{self.n_clfs} trained weak hypotheses. Similarly, after \texttt{AdaBoost.fit()} is called, \texttt{self.clfs} and \texttt{self.coefs} should be appropriately filled with the \texttt{self.n_clfs} trained weak hypotheses and their coefficients, respectively.
