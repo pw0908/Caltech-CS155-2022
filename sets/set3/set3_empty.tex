@@ -333,9 +333,9 @@ Thus:
 \begin{equation}
     D_{T+1}(i) =D_1(i)\prod_j^{T-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}
 \end{equation}
-Substituting $D_1(i)=\frac{1}{T}$ gives:
+Substituting $D_1(i)=\frac{1}{N}$ gives:
 \begin{equation}
-    D_{T+1}(i) =\frac{\prod_j^{T-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}}{T}
+    D_{T+1}(i) =\frac{\prod_j^{T-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}}{N}
 \end{equation}
 \end{solution}
 
@@ -365,17 +365,17 @@ $$E = \prod\limits_{t=1}^T Z_t.$$
 \begin{solution}
     Substituting our definition of $D_t(i)$ into our expression for $Z_t$ gives:
     \begin{equation}
-        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}\right)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))
+        Z_t = \frac{1}{N}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}\right)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))
     \end{equation}
     \begin{equation}
-        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\left(\prod_j^{t}\exp{(-\alpha_jy_ih_j(x_i))}\right)
+        Z_t = \frac{1}{N}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\left(\prod_j^{t}\exp{(-\alpha_jy_ih_j(x_i))}\right)
     \end{equation}
     \begin{equation}
-        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
+        Z_t = \frac{1}{N}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
     \end{equation}
     Thus:
     \begin{equation}
-        \prod_j^{t}Z_j=\frac{1}{T}\sum\limits_{i=1}^N\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
+        \prod_j^{t}Z_j=\frac{1}{N}\sum\limits_{i=1}^N\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
     \end{equation}
     As we can see, we have:
     \begin{equation}
