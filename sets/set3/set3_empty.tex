@@ -1,6 +1,6 @@
 \newif\ifshowsolutions
 \showsolutionstrue
-\input{./preamble}
+\input{preamble}
 
 
 
@@ -83,15 +83,38 @@ without error, the stopping criterion will be no impurity in the leaves.
 Submit a drawing of your tree showing the impurity reduction yielded by each split (including root) in your decision tree.
 
 \begin{solution}
+ Starting at the root node, we have $|S|=4$ and $p_S = 0.75$, thus the entropy is 2.25.
 
-
+ At the first node, we find that all three splits have the same entropy:
+ \begin{itemize}
+     \item Package type: Canned = \{no,yes\}, Bagged = \{yes,yes\}; entropy = 1.38
+     \item Unit Price > \$5: Yes = \{no,yes\}, No = \{yes,yes\}; entropy = 1.38
+     \item Contains > 5 grams of fat: Yes = \{no,yes\}, No = \{yes,yes\}; entropy = 1.38
+ \end{itemize}
+ As such, there is no difference between which split we choose. Randomly selecting package type, we get, for canned:
+ \begin{itemize}
+     \item Unit price > \$5: Yes = \{no\}, No = \{yes\}; entropy = 0.00
+     \item Contains > 5 grams of fat: Yes = \{no\}, No = \{yes\}; entropy = 0.00
+ \end{itemize}
+ Again, both entropies are identical and give us an impurity of 0.00, as such, by picking either of the above, we have reached our stopping criteria, giving the following tree with their respective reductions:
+ \begin{figure}[H]
+    \begin{center}
+    \includegraphics[width=\textwidth]{Tree_1A.pdf}
+    \end{center}
+    \end{figure}
 \end{solution}
 
 \problem[4]
 Compared to a linear classifier, is a decision tree always preferred for classification problems? If not, draw a simple 2-D dataset that can be perfectly classified by a simple linear classifier but which requires an overly complex decision tree to perfectly classify.
 
 \begin{solution}
-  
+  The tree classifier model is not always preferrable to the linear classifier. An example of this is shown below:
+  \begin{figure}[H]
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{LinSepSet.pdf}
+    \end{center}
+    \end{figure}
+    As we can see above, there are many wasted boundaries.
 \end{solution}
 
 \problem[15]
@@ -114,7 +137,30 @@ Is there any impurity measure (i.e. any function that maps the data points under
 justify your answer.
 
 \begin{solution}
+    \begin{itemize}
+        \item Trying to split this data set, we find that all linear, single-level splits will result in the same impurity of 2.0. As such, the classification error will be (2/4)=0.5. The true is simply: 
+        \begin{figure}[H]
+           \begin{center}
+           \includegraphics[width=0.3\textwidth]{Tree_1Ci.pdf}
+           \end{center}
+           \end{figure}
+        \item The following tree will result in a classification error of 0:
+        \begin{figure}[H]
+            \begin{center}
+            \includegraphics[width=0.7\textwidth]{Tree_1Cii.pdf}
+            \end{center}
+            \end{figure}
+        The following impurity measure would lead to a top-down greedy induction with the same stopping conduction to produce the above tree:
+        \begin{equation}
+            \text{impurity} = \frac{\#\text{pos}\times\#\text{neg}}{\sqrt{|S'|}}
+        \end{equation}
+        Pros: This effectively ensures that, if the fraction of correct classifications is the same before and after the split, we will split. 
 
+        Cons: This preference towards splitting may lead to unnecessary splits which can lead to overfitting. For example, in the case where the fraction of correct classifications is the same before and after the split, this split may actually result in worse generalisability of the tree.
+
+        \item If we imagine a case where the points are alternating between classifiers along both of the axis, the number of splits required to give a 0 training error will be however many data points - 1; this is the worst-case scenario for classifying a data set. As such, for a data set of 100 points, the maximum number of splits required with be 99 splits.
+    \end{itemize}
+ 
 \end{solution}
 
 \problem[4] Suppose in top-down greedy induction we want to split a leaf node that contains N data points composed of
@@ -124,7 +170,7 @@ complexity (big-O in terms of N and D) of the number of possible splits we must 
 Note: Recall that at each node-splitting step in training a DT, you must consider all possible splits that you can make. While there are an infinite number of possible decision boundaries since we are using continuous features, there are not an infinite number of boundaries that result in unique child sets (which is what we mean by ``split'').
 
 \begin{solution}
-   
+   In the worst-case complexity scenario, where the data set can only be split into the specific coordinates (or `cells') of the data points, we will need $\mathcal{O}(ND)$ splits. The best way to illustrate this is, like in the 2D example above, if the data points are alternating in all dimensions D, we will need $\mathcal{O}(ND)$ splits. 
 \end{solution}
 
 
@@ -152,6 +198,13 @@ ii. Train a decision tree classifier using Gini as the impurity measure and maxi
 
 \begin{solution}
  
+     i. The following figure was generated:
+     \begin{figure}[H]
+        \begin{center}
+        \includegraphics[width=0.7\textwidth]{DT_min_leaf.pdf}
+        \end{center}
+        \end{figure}
+ 
 \end{solution}
 
 \problem[6]
@@ -159,7 +212,7 @@ For either the minimal leaf node size or maximum depth parameters in the previou
 Please justify your answer based on the plot you derived.
 
 \begin{solution}
-   
+   In this case, the test error is minimised at a minimum node size of 12. We will have early stopping here at larger minimum node sizes; as such, in decreasing the minimum node size, we will begin to observe overfitting. This is illustrated in the figure with the increasing bias between the testing and training error. Once we introduce early stopping at greater minimum nodes sizes, where we have less splitting, the bias decreases, implying our model will generalise better.
 \end{solution}
 
 \indent\problem[4] Choose one of the following from i or ii: \smallskip 
@@ -170,7 +223,12 @@ leaf node size.
 ii. Train a random forest classifier using Gini as the impurity measure, maximal tree depth as early stopping criterion, and 1,000 trees in the forest. Try different tree depths from 2 to 20 in increments of 1. Then, on a single plot, plot both training and test classification error versus tree depth.
 
 \begin{solution}
-
+    i. The following figure was generated:
+    \begin{figure}[H]
+        \begin{center}
+        \includegraphics[width=0.7\textwidth]{RT_min_leaf.pdf}
+        \end{center}
+        \end{figure}
 \end{solution}
 
 \problem[6]
@@ -178,26 +236,31 @@ For either the minimal leaf node size or maximum depth parameters tested, which 
 Please justify your answer based on the plot you derived.
 
 \begin{solution}
-
+ For minimal leaf node size, we find that a value of 19 minimises the test error. In contrast to the decision tree, the random forest isn't as significantly affected by the early stopping (here indicated by the larger minimal leaf node size). However, like the decision tree, there is overfitting occuring at smaller minimum node size as illustrated by the larger bias. Similarly, with earlier stopping, the bias is reduced, implying the model will generalise better.
 \end{solution}
 
 \problem[4]
 Do you observe any differences between the curves for the random forest and decision tree plots? If so, explain what could account for these differences.
 
 \begin{solution}
+ The impact of the minimal leaf node size is less pronounced in the case of the random forest plot, where our minimum test error is as significantly different compared to the rest of the plot. The magnitude of the testing error is also smaller in the case of the random forest, despite the training error being very similar between the two.
 
+ The reason for this can be accounted for by the fact that the random forest is an ensemble of decision trees where we have generated bootstraps from the original training set and average the results. This will reduce variance in our predictions, as shown above.
 \end{solution}
 
 \textbf{Extra Credit [7 points total] :} \problem\textbf{[5 points, Extra Credit]} Complete the other option for \textbf{Problem A }and \textbf{Problem C}.
 
 \begin{solution}
-   
+    \begin{figure}[H]
+        \subfloat[]{\includegraphics[width=0.49\textwidth]{DT_max_depth.pdf}}
+        \subfloat[]{\includegraphics[width=0.49\textwidth]{RT_max_depth.pdf}}
+      \end{figure}
 \end{solution}
 
 \problem\textbf{[2 points, Extra Credit] }For the stopping criterion tested in \textbf{Problem F}, which parameter value minimizes the decision tree and random forest test error respectively? 
 
 \begin{solution}
-   
+   The error is minimised at a max depth of 2 and 18, respectively.
 \end{solution}
 
 
@@ -222,7 +285,34 @@ $$E = \frac{1}{N} \sum\limits_{i=1}^N \exp(-y_{i}f(x_i)) \geq \frac{1}{N} \sum\l
 where $\mathbbm{1}$ is the indicator function.
 
 \begin{solution}
-
+ Given all terms in the above sums are positive, all we need to prove is:
+ \begin{equation}
+     \exp{(-y_if(x_i))}\geq \mathbbm{1}(H(x_i)\neq y_i)
+ \end{equation}
+ For the case where $y_i$ and $f(x_i)$ have different signs, we have:
+ \begin{equation}
+    \exp{(-y_if(x_i))}\geq 1
+ \end{equation}
+ and:
+ \begin{equation}
+    \mathbbm{1}(H(x_i)\neq y_i)=1
+ \end{equation}
+ Similarly, for $y_i$ and $f(x_i)$ being the same sign, we have:
+ \begin{equation}
+    \exp{(-y_if(x_i))}\geq 0
+ \end{equation}
+ and:
+ \begin{equation}
+    \mathbbm{1}(H(x_i)\neq y_i)=0
+ \end{equation}
+ As such, we find:
+ \begin{equation}
+    \exp{(-y_if(x_i))}\geq \mathbbm{1}(H(x_i)\neq y_i)
+ \end{equation}
+ meaning:
+ \begin{equation}
+    E = \frac{1}{N} \sum\limits_{i=1}^N \exp(-y_{i}f(x_i)) \geq \frac{1}{N} \sum\limits_{i=1}^N \mathbbm{1}(H(x_i) \neq y_i)
+ \end{equation}
 \end{solution}
 
 \problem[3]
@@ -230,13 +320,36 @@ Find $D_{T + 1}(i)$ in terms of $Z_t$, $\alpha_t$, $x_i$, $y_i$, and the classif
 $$Z_t = \sum\limits_{i=1}^N D_t(i) \exp(-\alpha_{t}y_{i}h_{t}(x_{i})).$$
 
 \begin{solution}
-
+ From lectures, we know:
+ \begin{equation}
+     D_{t+1}(i) = \frac{D_t(i)\exp{(-\alpha_ty_ih_t(x_i))}}{Z_t}
+ \end{equation}
+ This is a recursive relationship which, when fully expanded, gives:
+ \begin{equation}
+    D_{t}(i) =D_1(i)\prod_j^{t-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}
+\end{equation}
+Thus:
+\begin{equation}
+    D_{T+1}(i) =D_1(i)\prod_j^{T-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}
+\end{equation}
+Substituting $D_1(i)=\frac{1}{T}$ gives:
+\begin{equation}
+    D_{T+1}(i) =\frac{\prod_j^{T-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}}{T}
+\end{equation}
 \end{solution}
 
 \problem[2]
 Show that $E = \sum_{i=1}^N  \frac{1}{N} e^{\sum_{t=1}^T -\alpha_t y_i h_t(x_i)}.$
 
 \begin{solution}
+ Given that:
+ \begin{equation}
+     f(x_i) = \sum_j\alpha_jh_j(x_i)
+ \end{equation}
+ we obtain:
+ \begin{equation}
+    E = \sum_{i=1}^N  \frac{1}{N} e^{\sum_{t=1}^T -\alpha_t y_i h_t(x_i)}
+ \end{equation}
 
 \end{solution}
 
@@ -249,7 +362,24 @@ $$E = \prod\limits_{t=1}^T Z_t.$$
 \end{hint}
 
 \begin{solution}
-
+    Substituting our definition of $D_t(i)$ into our expression for $Z_t$ gives:
+    \begin{equation}
+        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{\exp{(-\alpha_jy_ih_j(x_i))}}{Z_j}\right)\exp(-\alpha_{t}y_{i}h_{t}(x_{i}))
+    \end{equation}
+    \begin{equation}
+        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\left(\prod_j^{t}\exp{(-\alpha_jy_ih_j(x_i))}\right)
+    \end{equation}
+    \begin{equation}
+        Z_t = \frac{1}{T}\sum\limits_{i=1}^N \left(\prod_j^{t-1}\frac{1}{Z_j}\right)\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
+    \end{equation}
+    Thus:
+    \begin{equation}
+        \prod_j^{t}Z_j=\frac{1}{T}\sum\limits_{i=1}^N\exp{\sum_j^t\left(-\alpha_jy_ih_j(x_i)\right)}
+    \end{equation}
+    As we can see, we have:
+    \begin{equation}
+        E = \prod_j^{T}Z_j
+    \end{equation}
 \end{solution}
 
 \problem[5]
@@ -259,7 +389,35 @@ where $\epsilon_t$ is the training set error of weak classifier $h_t$ for the we
 \[\epsilon_t = \sum\limits_{i=1}^N D_t(i)\mathbbm1(h_t(x_i) \neq y_i).\]
 
 \begin{solution}
-	
+	Starting from:
+    \begin{equation}
+        Z_t = \sum\limits_{i=1}^N D_t(i) \exp(-\alpha_{t}y_{i}h_{t}(x_{i}))
+    \end{equation}
+    Taking the case where $h_t(x_i)\neq y_i$, we have:
+    \begin{equation}
+        Z_t = \sum\limits_{i=1}^N D_t(i) \exp(\alpha_{t})
+    \end{equation}
+    By the nature of distribution functions, this gives:
+    \begin{equation}
+        Z_t = \exp(\alpha_{t})
+    \end{equation}
+    From the definition of $\epsilon_t$, if $h_t(x_i)\neq y_i$, we have:
+    \begin{equation}
+        \epsilon_t = \sum\limits_{i=1}^N D_t(i) = 1
+    \end{equation}
+    Thus:
+    \begin{equation}
+        Z_t = (0)\exp(-\alpha_t)+\exp(\alpha_t)=\exp(\alpha_t)
+    \end{equation}
+    Inversly, for $h_t(x_i)= y_i$, we have:
+    \begin{equation}
+        Z_t = \sum\limits_{i=1}^N D_t(i) \exp(-\alpha_{t})=\exp(-\alpha_{t})
+    \end{equation}
+    And, given $\epsilon_t=0$:
+    \begin{equation}
+        Z_t = \exp(-\alpha_t)+(0)\exp(\alpha_t)=\exp(-\alpha_t)
+    \end{equation}
+    Thus, both cases are satisfied.
 \end{solution}
 
 \problem[2]
@@ -269,7 +427,16 @@ AdaBoost:
 $$\alpha_{t}^* = \frac{1}{2} \ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right).$$
 
 \begin{solution}
-	
+	Taking the derivative w.r.t. $\alpha_t$ gives:
+    \begin{equation}
+        \frac{\partial Z_t}{\partial\alpha_t} = -(1-\epsilon_t)\exp(-\alpha_t)+\epsilon_t\exp(\alpha_t) = 0
+    \end{equation}
+    \begin{equation}
+        \frac{(1-\epsilon_t)}{\epsilon_t} = \exp(2\alpha_t)
+    \end{equation}
+    \begin{equation}
+        \alpha_t^* = \frac{1}{2}\ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right)
+    \end{equation}
 \end{solution}
 
 \begin{problem}[14]
@@ -282,12 +449,32 @@ $$\alpha_{t}^* = \frac{1}{2} \ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right)
     \end{itemize}
 \end{problem}
 
+\begin{solution}
+  The following figures were generated:
+  \begin{itemize}
+      \item For Gradient Boost:
+      \begin{figure}[H]
+        \begin{center}
+        \includegraphics[width=0.5\textwidth]{Loss_GB.png}
+        \end{center}
+        \end{figure}
+      \item For Adaboost:
+      \begin{figure}[H]
+        \begin{center}
+        \includegraphics[width=0.5\textwidth]{Loss_AB.png}
+        \end{center}
+        \end{figure}
+  \end{itemize}
+\end{solution}
+
 \begin{problem}[2]
     Describe and explain the behaviour of the loss curves for gradient boosting and for AdaBoost. You should consider two kinds of behaviours: the smoothness of the curves and the final values that the curves approach.
 \end{problem}
 
 \begin{solution}
+  In terms of smoothness, gradient boost is smoother than adaboost; this is primarily because the adaboost method will be jumping between weights as we correctly or incorrectly classify data points, primarily through the definition of our loss function. In gradient boosting, all equations are continuous, resulting in a smooth loss.
   
+  In terms of final errors, because gradient boosting is weighing all datapoints equally, it eventually reaches an error of 0. However, in the case of adaboosting, because we are not fitting all the points equally, the error is non-zero even for large numbers of classifiers. However, the testing error for gradient boosting is greater than adaboosting, highlighting that the former is overfitting, primarily because it is fitting all data points equally. 
 \end{solution}
 
 \begin{problem}[2]
@@ -295,7 +482,7 @@ $$\alpha_{t}^* = \frac{1}{2} \ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right)
 \end{problem}
 
 \begin{solution}
-  
+  In terms of classification, Adaboost performed better. We can see they by considering that, not only was the final loss smaller than gradient boosting, but, in comparison to the training loss, adaboost had a smaller difference, indicative of a smaller bias, implying that the model generated will generalise better.
 \end{solution}
 
 \begin{problem}[2]
@@ -305,7 +492,7 @@ $$\alpha_{t}^* = \frac{1}{2} \ln \left(\frac{1 - \epsilon_t}{\epsilon_t} \right)
     Watch how the dataset weights change across time in the animation.
 \end{hint}
 \begin{solution}
-   
+   The data points in the center of the spiral have the smallest weights, primarily because they are already fitted correctly, whilst the points at the borders of the spirals have the largest weights, given these are the points we are most focused on fitting.
 \end{solution}
 
 \end{document}
