@@ -101,6 +101,7 @@ def visualize_loss_curves_gb(model, X_train, Y_train, X_test, Y_test):
     plt.legend(['Training loss', 'Test loss'])
     plt.xlabel('n_clfs')
     plt.ylabel('LOss')
+    plt.savefig("Loss_GB.pdf")
     plt.show()
 
 def visualize_loss_curves_ab(model, X_train, Y_train, X_test, Y_test):
@@ -126,6 +127,8 @@ def visualize_loss_curves_ab(model, X_train, Y_train, X_test, Y_test):
     plt.legend(['Training loss', 'Test loss'])
     plt.xlabel('n_clfs')
     plt.ylabel('LOss')
+    plt.savefig("Loss_AB.pdf")
+
     plt.show()
 
 
