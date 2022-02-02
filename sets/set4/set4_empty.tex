@@ -1,6 +1,6 @@
 \newif\ifshowsolutions
 \showsolutionstrue
-\input{./preamble}
+\input{preamble}
 
 
 
@@ -84,7 +84,11 @@ Fit the neural network at \href{http://playground.tensorflow.org/#activation=rel
 Give a mathematical justification, based on what you know about the backpropagation algorithm and the ReLU function, for the difference in the performance of the two networks.
 
 \begin{subsolution}
-
+ In the back-propagation algorithm, we use:
+ \begin{equation}
+   \frac{\partial S^l}{\partial X^{l-1}}=W^l
+ \end{equation}
+ If we initialise our weights to 0, as we did in the second example, there will effectively be no `learning'. Furthermore, after the first layer, due to the ReLU function being $\max{0,S}$, our inputs to subsequent layers will also be zero, as $s^2=w^1x^1$ (as we saw visually in the second example). As such, our weights will never be updated. This is not the case in the first example as we have initialised the weights to be non-zero, allowing `learning' to occur. 
 \end{subsolution}
 
 \begin{problem}[5]
@@ -97,7 +101,13 @@ Explain the differences in the models learned, and the speed at which they were 
 
 
 \begin{subsolution}
+ In the case of a sigmoid function, its value for a zero input will be non-zero. This deals with the issue we encountered previously with the ReLU function. Thus, it would seem to imply that we should be able to `teach' a model even if the initial weights are zero. This is indeed the case as even in the case of the second example, we (eventually) see changes in the weights. 
 
+ However, we now encounter the `vanishing gradient' problem; in the case of the first example, due to the weights being initiated at very small values, these get updated very slowly (taking 500 iterations to observe a significant drop in error). This is even worse in the second example where the weights initiated at 0 take 3200 iterations to observe a significant change (even this change is slower than in the first example).
+
+ We also notice that the weights in the second example, even after some training occur, are identical between all the nodes. This is likely because we used the same initial guesses (zero) rather than random initial guesses.
+ 
+ Nevertheless, in contrast to the models in the previous question, we do notice that the boundaries obtained are much smoother when using a sigmoid activation function. This is related to the fact that the sigmoid function is continuous and differentiable.
 \end{subsolution}
 
 
@@ -107,7 +117,7 @@ Explain the differences in the models learned, and the speed at which they were 
 When training any model using SGD, it's important to shuffle your data to avoid correlated samples. To illustrate one reason for this that is particularly important for ReLU networks, consider a dataset of 1000 points, 500 of which have positive (+1) labels, and 500 of which have negative (-1) labels. What happens if we train a fully-connected network with ReLU activations using SGD, looping through all the negative examples before any of the positive examples? (Hint: this is called the ``dying ReLU'' problem.)
 
 \begin{solution}
-
+ If we were to train a ReLU network using SGD, only cycling through the 500 data points with negative labels, the weights would develop a heavy negative bias. This can result in a `dead' ReLU where, as the input will be biased towards negative values, due to the nature of ReLU function, the output will always be zero. As we explained previously, if the output from the first layer is zero, the output of all subsequent layers will also be zero, preventing further learning, even when introducing positive examples (in a sense, we will have reached a minima where SGD will be unable to step out of).
 \end{solution}
 
 
@@ -125,8 +135,11 @@ Draw or describe a fully-connected network with ReLU units that implements the O
 Your network need only produce the correct output when $x_1 \in \{0, 1\}$ and $x_2 \in \{0, 1\}$ (as described in the examples above).
 
 \begin{subsolution}
-
-
+  \begin{figure}[H]
+    \begin{center}
+    \includegraphics[width=0.5\textwidth]{P1C.pdf}
+    \end{center}
+    \end{figure}
 \end{subsolution}
 
 \problem Approximating Functions Part 2 \textbf{[8 Points]}
@@ -144,8 +157,15 @@ Explain why a network with fewer layers than the number you specified cannot com
 
 
 \begin{subsolution}
+ Given the XOR($x_1,x_2$) is not linearly separable (the function would look like the classification problem given in the second homework set), we will need at least one hidden layer, as well as an input and output layer. If we only had the latter two, we'd only have a perceptron which will be unable to separate the dataset. 
 
+ Thus we need a minimum of three layers:
 
+ \begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=0.5\textwidth]{P1D.pdf}
+  \end{center}
+  \end{figure}
 \end{subsolution}
 
 
@@ -172,7 +192,9 @@ If you want to run PyTorch locally, follow the steps on \\
 Write down the version numbers for both \textbf{torch} and \textbf{torchvision} that you have installed. On Google Colab, you can find version numbers by running: \begin{verbatim}!pip list | grep torch\end{verbatim}
 
 \begin{solution}
-
+ The following versions were downloaded:
+ torch                              1.10.2   
+ torchvision                        0.11.3 
 \end{solution}
 
 
@@ -183,7 +205,7 @@ Load the MNIST dataset using torchvision; see the problem 2 sample code for how.
 Image inputs in PyTorch are generally 3D tensors with the shape (no. of channels, height, width). Examine the input data. What are the height and width of the images? What do the values in each array index represent?  How many images are in the training set? How many are in the testing set? You can use the \textbf{imshow} function in matplotlib if you'd like to see the actual pictures (see the sample code).
 
 \begin{subsolution}
-
+ The images are 28 x 28. The values in each array range from 0 to 1 and represent the pixel value (brightness). We have 60000 images in the training set and and 10000 in the testing set.
 \end{subsolution}
 
  \problem \textbf{Modeling Part 1} \textbf{[10 Points]}
@@ -209,7 +231,7 @@ Look at the sample code to see how to train your model. You can tinker with the 
 
 
 \begin{solution}
-
+ Final accuracy: 97.77\%
 \end{solution}
 
 
@@ -218,7 +240,7 @@ Look at the sample code to see how to train your model. You can tinker with the 
  Repeat problem C, except that now you may use 200 hidden units and must build a model with at least 2 hidden layers that achieves test accuracy of at least 0.98.
 
 \begin{solution}
- 
+  Final accuracy: 98.09\%
 \end{solution}
 
  \problem \textbf{Modeling Part 3} \textbf{[6 EC Points]}
@@ -226,7 +248,7 @@ Look at the sample code to see how to train your model. You can tinker with the 
  Repeat problem C, except that now you may use 1000 hidden units and must build a model with at least 3 hidden layers that achieves test accuracy of at least 0.983.
 
 \begin{solution}
-
+  Final accuracy: 98.45\%
 \end{solution}
 
  \newpage
@@ -248,7 +270,7 @@ Figure: A convolution being applied to a $2 \times 2$ patch (the red square) of 
 What is one benefit and one drawback to this zero-padding scheme (in contrast to an approach in which we only perform convolutions over patches entirely contained within an image)?
 
 \begin{solution}
-
+ One benefit of a zero-padding scheme is the preservation of the original size of the image, allowing us to extract the low-level features. However, equally, we will be wasting computational resources whenever we process these padded elements. 
 \end{solution}
 
 \subsection{5 x 5 Convolutions}
@@ -265,13 +287,13 @@ Consider a single convolutional layer, where your input is a $32 \times 32$ pixe
 \problem[2] What is the number of parameters (weights) in this layer, including a bias term for each filter?
 
 \begin{subsolution}
-
+ We have $(5\times 5\times3 +1 (\text{bias}))\times 8=608$ parameters for each filter.
 \end{subsolution}
 
 \problem[3] What is the shape of the output tensor? Remember that convolution is performed over the first two dimensions of the input only, and that a filter is applied to all channels.
 
 \begin{subsolution}
-
+ We have $(32-5+1)^2\times 3 \times 8 \text{filters} \rightarrow 28\times28\times3 \times 8$ filters.
 \end{subsolution}
 
  \subsection{Max/Average Pooling}
@@ -321,7 +343,28 @@ $$
 Apply $2 \times 2$ average pooling with a stride of 2 to each of the above images.
 
 \begin{subsolution}
-
+  $$
+  \begin{bmatrix}
+    1 & 0.5 \\
+    0.5 & 0.25 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    0.5 & 1 \\
+    0.25 & 0.5 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    0.25 & 0.5 \\
+    0.5 & 1 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    0.5 & 0.25 \\
+    1 & 0.5 \\
+  \end{bmatrix}
+  %
+  $$
 \end{subsolution}
 
 \problem[3]
@@ -329,7 +372,28 @@ Apply $2 \times 2$ average pooling with a stride of 2 to each of the above image
 Apply $2 \times 2$ max pooling with a stride of 2 to each of the above images.
 
 \begin{subsolution}
-
+  $$
+  \begin{bmatrix}
+    1 & 1 \\
+    1 & 1 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    1 & 1 \\
+    1 & 1 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    1 & 1 \\
+    1 & 1 \\
+  \end{bmatrix},
+  %
+  \begin{bmatrix}
+    1 & 1 \\
+    1 & 1 \\
+  \end{bmatrix}
+  %
+  $$
 \end{subsolution}
 
 \problem[4]
@@ -337,7 +401,7 @@ Apply $2 \times 2$ max pooling with a stride of 2 to each of the above images.
 Consider a scenario in which we wish to classify a dataset of images of various animals, where an animal may appear at various angles/locations of the image, and the image contains small amounts of noise (e.g. some pixels may be missing). Why might pooling be advantageous given these properties of our dataset?
 
 \begin{subsolution}
-
+ In pooling, our learning is relatively insensitive to individual pixels, meaning that things such as noise, different locations, etc., should not have such a significant impact on the learning, as long as most pixels have similar max and average values.
 \end{subsolution}
 
 \subsection{PyTorch implementation}
@@ -422,8 +486,33 @@ Do you foresee any problem with this way of validating our hyperparameters? If s
   \end{itemize}
 \end{itemize}
 \begin{solution}
+  The following test accuracies were obtained for different dropouts:
 
+    \begin{center}
+    \begin{tabular}{|c|c|}\hline
+    Dropout & Test Accuracy \\\hline
+    0.1     & 0.9833        \\
+    0.2     & 0.9765        \\
+    0.3     & 0.9692        \\
+    0.4     & 0.965         \\
+    0.5     & 0.9514        \\
+    0.6     & 0.9374        \\
+    0.7     & 0.9117        \\
+    0.8     & 0.8302        \\
+    0.9     & 0.5715        \\
+    1       & 0.098        \\\hline
+    \end{tabular}
+  \end{center}
+  Based on the above, the optimal dropout is 0.1; using this gave the following values:
+  \begin{itemize}
+    \item Validation loss: 0.0502
+    \item Validation accuracy: 0.9852
+  \end{itemize}
+  Values beyond 0.1 only lead to a deterioration in the model performance. Starting from the architecture provided and trying various approaches, it was found that, following the general CNN design principles given in the problem, adding a batch norm after each convolutional layer and prior to activation layers was the most effective regularisation method (in comparison to layerwise regularisation). This is primarily due to the simplicity of the dataset being trained on.
 
+  The issue with this method of validating the hyperparameter is that we are using the testing data set to validate the hyperparameter. This could potentially lead to us overfitting the validation data. Without an additional testing set, it is difficult to evaluate the extent of this potential overfitting. 
+
+  Furthermore, relying on just the first epoch to evaluate the performance of our model isn't very representative of the true performance. Due to the nature of SGD, it could be that the global optimum isn't reached until many epoches, in the case of all dropouts.
 \end{solution}
 
 
